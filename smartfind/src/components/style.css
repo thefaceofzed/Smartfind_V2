@@ -1,0 +1,35 @@
+body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .picture {
+    max-width: 100%;
+    height: auto;
+  }
+  .grid-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    height: 100vh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  @media screen and (min-width: 640px) {
+    .grid-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+ 
+  .bg-gray-800 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(31 41 55 / var(--tw-bg-opacity));
+}

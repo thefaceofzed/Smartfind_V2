@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import '../index.css';
+
 export default function Signup(props) {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [signedUp, setSignedUp] = useState(false); // added state to track if signed up
 
   const handleInputChange = (event) => {
     const target = event.target;
@@ -28,8 +30,12 @@ export default function Signup(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(`Full Name: ${fullName}, Email: ${email}, Password: ${password}`);
-    props.handleToggleForm(); // Updated function name
+    setSignedUp(true); // set signed up to true when form submitted
   };
+
+  if (signedUp) {
+    return <div>You have successfully signed up!</div>; // show message if signed up
+  }
 
   return (
     <div className='bg-gray-800 flex flex-col justify-center'>
