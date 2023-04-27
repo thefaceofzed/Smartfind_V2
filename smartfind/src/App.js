@@ -11,12 +11,6 @@ function App() {
   const [userData, setUserData] = useState(null);
   const [showSmartCard, setShowSmartCard] = useState(false);
 
-  const handleUserData = (data) => {
-    setUserData(data);
-    setShowForm(false);
-    setShowLogin(false);
-    setShowSmartCard(true);
-  };
   const handleToggleForm = (isLogin) => {
     setShowLogin(isLogin);
     setShowForm(!isLogin);
@@ -35,30 +29,38 @@ function App() {
     setShowSmartCard(false);
   };
 
-  
+  const handleSubmitForm = (data) => {
+    setUserData(data);
+    setShowForm(false);
+    setShowLogin(false);
+    setShowSmartCard(true);
+  };
 
   return (
     <div>
       {showForm ? (
-        <Signup handleToggleForm={handleToggleForm} handleSignUpClick={handleSignUpClick} />
+        <Signup
+          handleToggleForm={handleToggleForm}
+          handleSignUpClick={handleSignUpClick}
+        />
+      ) : userData ? (
+        <SmartCard userData={userData} showSmartCard={showSmartCard} />
+      ) : showLogin ? (
+        <Login
+          handleSignUpClick={handleSignUpClick}
+          handleFormClick={() => handleToggleForm(false)}
+          handleToggleForm={handleToggleForm}
+        />
       ) : (
-        <>
-          {userData ? (
-           <SmartCard  showSmartCard={showSmartCard}  />
-          ) : (
-            
-            <> 
-              {showLogin ? (
-                <Login handleSignUpClick={handleSignUpClick} handleFormClick={() => handleToggleForm(false)} handleToggleForm={handleToggleForm} />
-              ) : (
-                <Form onSubmit={handleUserData} handleSignInClick={handleSignInClick} handleToggleForm={handleToggleForm} setShowSmartCard={setShowSmartCard} />
-              )}
-            </>
-          )}
-        </>
+        <Form
+          onSubmit={handleSubmitForm}
+          handleSignInClick={handleSignInClick}
+          handleToggleForm={handleToggleForm}
+          setShowSmartCard={setShowSmartCard}
+        />
       )}
     </div>
-  );  
+  );
 }
 
 export default App;
