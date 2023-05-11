@@ -1,7 +1,11 @@
 import React, { useRef } from "react";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 
-const SmartCard = ({ formData }) => {
+import Map from "./Map";
+
+const SmartCard = (props) => {
+  const { formData } = props;
+  const { locationName } = formData;
   const urlInputRef = useRef(null);
 
   const handleShareButtonClick = () => {
@@ -16,6 +20,9 @@ const SmartCard = ({ formData }) => {
       facebook: formData.facebook,
       twitter: formData.twitter,
       instagram: formData.instagram,
+      latitude: formData.latitude,
+      longitude: formData.longitude,
+      picture: URL.createObjectURL(formData.picture),
     });
     const shareableUrl = `${baseUrl}?${queryParams.toString()}`;
 
@@ -24,7 +31,6 @@ const SmartCard = ({ formData }) => {
       navigator.clipboard.writeText(shareableUrl);
       alert("Copied shareable link to clipboard!");
     } else {
-      // Fallback for browsers that don't support Clipboard API
       urlInputRef.current.select();
       document.execCommand("copy");
       alert("Copied shareable link to clipboard!");
@@ -32,8 +38,8 @@ const SmartCard = ({ formData }) => {
   };
 
   return (
-    <div className="flex justify-center bg-gray-900">
-      <div className="bg-gray-900 w-96 rounded-lg px-8 py-10 mb-10 shadow-xl">
+    <div className="bg-gray-900 p-4 rounded-lg">
+      <div className="max-w-6xl w-full rounded-lg px-8 py-10 mb-10 shadow-xl">
         <div className="flex justify-center mb-8">
           <img
             src={URL.createObjectURL(formData.picture)}
@@ -54,16 +60,14 @@ const SmartCard = ({ formData }) => {
           <p className="text-gray-100">{formData.number}</p>
         </div>
         <div className="border-t border-b border-gray-700 py-4">
-          <p className="text-gray-400 text-sm mb-1">Locations:</p>
-          <ul className="text-gray-100">
-            {formData.locations.map((location) => (
-              <li key={location}>{location}</li>
-            ))}
-          </ul>
+          <p className="text-gray-400 text-sm mb-1">Location Name:</p>
+          <p className="text-gray-100">{locationName}</p>
         </div>
         <div className="flex justify-center mt-4">
           <img
-            src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${formData.username}`}
+            src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
+              window.location.href
+            )}`}
             alt={`QR Code for ${formData.username}`}
             className="mr-6"
           />
@@ -83,12 +87,14 @@ const SmartCard = ({ formData }) => {
             Share
           </button>
         </div>
-        <input
-          ref={urlInputRef}
-          type="text"
-          defaultValue=""
-          className="sr-only"
-        />
+        <div className="mt-8 flex justify-center items-center">
+          {/* Render the Map component with separate props for latitude and longitude */}
+          <div id="map" style={{ height: "500px", width: "80%" }}>
+            <Map latitude={formData.latitude} longitude={formData.longitude} />
+          </div>
+        </div>
+
+        {/* Remove input element from JSX as it's no longer needed */}
       </div>
     </div>
   );
