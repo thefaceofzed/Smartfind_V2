@@ -1,43 +1,72 @@
-import React, { useState, useEffect, Component } from "react";
+import React, { useState, useEffect } from "react";
+import Map from "./Map";
 import SmartCard from "./SmartCard";
 
-const initialFormData = {
-  name: "",
-  username: "",
-  number: "",
-  email: "",
-  picture: null,
-  facebook: "",
-  twitter: "",
-  instagram: "",
-  locations: [],
-};
+const Form = (props) => {
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  const locationName = urlSearchParams.get("locationName") || "";
+  const [mapLoaded, setMapLoaded] = useState(false);
 
+  useEffect(() => {
+    // Your code for rendering the map goes here
 
+    setMapLoaded(true);
+  }, []);
 
+  const initialFormData = {
+    name: "",
+    username: "",
+    number: "",
+    email: "",
+    picture: null,
+    facebook: "",
+    twitter: "",
+    instagram: "",
+    locations: [],
+    locationName: locationName || "", // Use the passed-in locationName or an empty string
+  };
+  
 
-const Form = () => {
   const [formData, setFormData] = useState(initialFormData);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showSmartCard, setShowSmartCard] = useState(false);
 
-  const handleAddLocation = () => {
-    window.location.href = '  http://127.0.0.1:8081/index.html';
-  };
-
-  const handleDeleteLocation = (index) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      locations: prevFormData.locations.filter((_location, i) => i !== index),
-    }));
-  };
+  useEffect(() => {
+    setFormData({ ...formData, locationName: locationName });
+  }, [locationName]);
 
   const handleSubmitForm = async (e) => {
     e.preventDefault();
-      
+  
+    // Check if any field is empty
+    const isEmpty =
+      !formData.name ||
+      !formData.username ||
+      !formData.number ||
+      !formData.email ||
+      !formData.picture ||
+      !formData.facebook ||
+      !formData.twitter ||
+      !formData.instagram;
+  
+    if (isEmpty) {
+      window.alert("Please fill out all fields.");
+      return;
+    }
+  
+    // Add locationName to formData
+    const updatedFormData = {
+      ...formData,
+      locationName: locationName,
+    };
+  
     setIsSubmitted(true);
     setShowSmartCard(true);
+    setFormData(updatedFormData);
   };
+  
+  
+  
 
   const handlePictureChange = (e) => {
     setFormData((prevFormData) => ({
@@ -45,15 +74,53 @@ const Form = () => {
       picture: e.target.files[0],
     }));
   };
-  console.log(showSmartCard);
+
+  const handleLocationClick = (location) => {
+    const updatedFormData = {
+      ...formData,
+      locationName: location,
+    };
+  
+    setFormData(updatedFormData);
+  };
+  
+  
   return (
     <>
-     {showSmartCard === false ? (
-  <form method="post" onSubmit={handleSubmitForm}>
+      {showSmartCard === false ? (
+        
+        <form method="post" onSubmit={handleSubmitForm}>
+          
           <div className="bg-gray-900 p-4 rounded-lg">
             <h2 className="text-2xl font-bold text-gray-100 mb-4">
               Enter your information
             </h2>
+  
+            <div style={{ height: "400px", marginTop: "20px" }}>
+              <Map
+                locationName={formData.locationName}
+                onLocationClick={handleLocationClick}
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                className="block text-gray-100 font-bold mb-2"
+                htmlFor="location"
+              >
+                My Location
+              </label>
+              <input
+                className="bg-gray-800 appearance-none border-2 border-gray-700 rounded-lg w-full py-2 px-4 text-gray-100 leading-tight focus:outline-none focus:bg-gray-700 focus:border-gray-500"
+                id="location"
+                type="text"
+                value={formData.locationName}
+                onChange={(e) =>
+                  setFormData({ ...formData, locationName: e.target.value })
+                }
+                placeholder="ENTER YOUR LOCATION"
+              />
+            </div>
+
             <div className="mb-4">
               <label
                 className="block text-gray-100 font-bold mb-2"
@@ -69,7 +136,7 @@ const Form = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
                 }
-                placeholder="John Doe"
+                placeholder="ENTER YOUR NAME"
               />
             </div>
             <div className="mb-4">
@@ -87,7 +154,7 @@ const Form = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, username: e.target.value })
                 }
-                placeholder="johndoe"
+                placeholder=" please enter a valid username"
               />
             </div>
             <div className="mb-4">
@@ -105,9 +172,10 @@ const Form = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, number: e.target.value })
                 }
-                placeholder="123-456-7890"
+                placeholder="+212 (please enter  a valid number)"
               />
             </div>
+            
             <div className="mb-4">
               <label
                 className="block text-gray-100 font-bold mb-2"
@@ -123,7 +191,7 @@ const Form = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
                 }
-                placeholder="johndoe@example.com"
+                placeholder="smartcard@example.com"
               />
             </div>
             <div className="mb-4">
@@ -141,53 +209,7 @@ const Form = () => {
                 onChange={handlePictureChange}
               />
             </div>
-            <div className="mb-4">
-  <button
-    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-    type="button"
-    onClick={() => handleAddLocation('http://localhost:8081/index.html')}
-  >
-    Add Location
-  </button>
-</div>
-
-            
-{formData.locations.length > 0 && (
-
-                <div className="mb-4">
-  
-                  <h3 className="text-lg font-bold text-gray-100 mb-2">
-  
-                    Your Locations
-  
-                  </h3>
-  
-                  <ul>
-  
-                    {formData.locations.map((location, index) => (
-  
-                      <li key={index}>
-  
-                        {location}{" "}
-  
-                       <button
-  className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-  type="button"
-  onClick={() => handleDeleteLocation(index)}
->
-  Delete
-</button>
-
-  
-                      </li>
-  
-                    ))}
-  
-                  </ul>
-  
-                </div>
-  
-              )}
+           
 
             <div className="mb-4">
               <label
@@ -204,7 +226,7 @@ const Form = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, facebook: e.target.value })
                 }
-                placeholder="https://www.facebook.com/johndoe"
+                placeholder="https://www.facebook.com/ismail"
               />
             </div>
             <div className="mb-4">
@@ -222,7 +244,7 @@ const Form = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, twitter: e.target.value })
                 }
-                placeholder="https://twitter.com/johndoe"
+                placeholder="https://twitter.com/ismail"
               />
             </div>
             <div className="mb-4">
@@ -240,10 +262,10 @@ const Form = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, instagram: e.target.value })
                 }
-                placeholder="https://www.instagram.com/johndoe"
+                placeholder="https://www.instagram.com/ismail"
               />
             </div>
-
+            
             <div className="flex justify-center">
               <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -253,9 +275,11 @@ const Form = () => {
               </button>
             </div>
           </div>
+          
         </form>
+        
       ) : (
-        <SmartCard formData={formData} />
+        <SmartCard formData={formData} locationName={formData.locationName}/>
       )}
     </>
   );

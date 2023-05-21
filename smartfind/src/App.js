@@ -1,66 +1,53 @@
 import React, { useState } from 'react';
-import Login from './components/Login';
-import Signup from './components/Signup';
-import Form from './components/Form';
-import SmartCard from './components/SmartCard';
-import './index.css';
+import styles from './style';
 
-function App() {
-  const [showForm, setShowForm] = useState(false);
-  const [showLogin, setShowLogin] = useState(true);
-  const [userData, setUserData] = useState(null);
-  const [showSmartCard, setShowSmartCard] = useState(false);
+import {
+  Business, Button,
+  CardDeal, CTA, FeedbackCard, Form, Hero, Nav, People, Login, Signup, SmartCard, Stats, Testimonials, Billing, Footer,
 
-  const handleToggleForm = (isLogin) => {
-    setShowLogin(isLogin);
-    setShowForm(!isLogin);
-    setShowSmartCard(false);
-  };
+} from './components';
 
-  const handleSignInClick = () => {
-    setShowForm(false);
-    setShowSmartCard(false);
+const App = () => {
+
+  const [showLogin, setShowLogin] = useState(false);
+
+  const handleShowLogin = () => {
     setShowLogin(true);
   };
 
-  const handleSignUpClick = () => {
-    setShowLogin(false);
-    setShowForm(true);
-    setShowSmartCard(false);
-  };
-
-  const handleSubmitForm = (data) => {
-    setUserData(data);
-    setShowForm(false);
-    setShowLogin(false);
-    setShowSmartCard(true);
-  };
-
   return (
-    <div>
-      {showForm ? (
-        <Signup
-          handleToggleForm={handleToggleForm}
-          handleSignUpClick={handleSignUpClick}
-        />
-      ) : userData ? (
-        <SmartCard userData={userData} showSmartCard={showSmartCard} />
-      ) : showLogin ? (
-        <Login
-          handleSignUpClick={handleSignUpClick}
-          handleFormClick={() => handleToggleForm(false)}
-          handleToggleForm={handleToggleForm}
-        />
-      ) : (
-        <Form
-          onSubmit={handleSubmitForm}
-          handleSignInClick={handleSignInClick}
-          handleToggleForm={handleToggleForm}
-          setShowSmartCard={setShowSmartCard}
-        />
-      )}
+    <div className="bg-gray-900 w-full overflow-hidden">
+      <div className={`px-4 flex justify-center ${showLogin ? 'hidden' : ''}`}>
+        <div className="max-w-md">
+          <Nav handleShowLogin={handleShowLogin} className="py-4 px-6 font-poppins font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none mt-10" />
+        </div>
+      </div>
+      <div className={`bg-primary ${styles.flexStart} ${showLogin ? 'hidden' : ''}`}>
+        <div className={styles.boxWidth}>
+          <Hero/>
+        </div>
+      </div>
+
+      <div className={`bg-primary ${styles.paddingX} ${styles.flexStart} ${showLogin ? 'hidden' : ''}`}>
+        <div className={styles.boxWidth}>
+          <Stats/>     
+          <Business/>
+          <Billing/>
+          <CardDeal/>
+          <Testimonials/>
+          <People/>
+          <FeedbackCard/>
+          <CTA/> 
+          <Footer/>
+         
+        </div>
+      </div>
+      <div className='container-with-scrollbar'>
+  {showLogin && <Login />}
+</div>
+
     </div>
   );
-}
+};
 
 export default App;
