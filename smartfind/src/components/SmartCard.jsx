@@ -6,7 +6,11 @@ import Map from "./Map";
 const SmartCard = (props) => {
   const { formData } = props;
   const { locationName } = formData;
+<<<<<<< HEAD
   const qrCodeRef = useRef(null);
+=======
+  const urlInputRef = useRef(null);
+>>>>>>> ac994cffd1912563226a9940b7dbf9fa99527d0d
 
   const handleShareButtonClick = () => {
     // Construct a shareable URL based on the form data
@@ -26,6 +30,7 @@ const SmartCard = (props) => {
     });
     const shareableUrl = `${baseUrl}?${queryParams.toString()}`;
 
+<<<<<<< HEAD
     // Open a share dialog for Facebook, Twitter or email depending on which button was clicked
     const socialMediaOptions = [
       { name: "facebook", icon: FaFacebook },
@@ -56,6 +61,16 @@ const SmartCard = (props) => {
       downloadLink.href = qrCodeImage;
       downloadLink.download = `${formData.username}-qrcode.png`;
       downloadLink.click();
+=======
+    // Copy the shareable URL to the clipboard
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareableUrl);
+      alert("Copied shareable link to clipboard!");
+    } else {
+      urlInputRef.current.select();
+      document.execCommand("copy");
+      alert("Copied shareable link to clipboard!");
+>>>>>>> ac994cffd1912563226a9940b7dbf9fa99527d0d
     }
   };
 
@@ -83,7 +98,11 @@ const SmartCard = (props) => {
         </div>
         <div className="border-t border-b border-gray-700 py-4">
           <p className="text-gray-400 text-sm mb-1">Location Name:</p>
+<<<<<<< HEAD
           <p className="text-gray-100">8Q34+F27, Safi, Maroc</p>
+=======
+          <p className="text-gray-100">{locationName}</p>
+>>>>>>> ac994cffd1912563226a9940b7dbf9fa99527d0d
         </div>
         <div className="flex justify-center mt-4">
           <canvas
